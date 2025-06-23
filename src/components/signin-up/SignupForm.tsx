@@ -6,12 +6,13 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 
 const schema = z.object({
+  name: z.string().min(2, "Name must contain at least 2 characters"),
   email: z.string().email("Invalid email adress"),
   password: z.string().min(6, "Password must contain at least 6 characters"),
 });
 
 type FormData = z.infer<typeof schema>;
-export const SigninForm: React.FC = () => {
+export const SignupForm: React.FC = () => {
   const {
     register,
     handleSubmit,
@@ -32,6 +33,32 @@ export const SigninForm: React.FC = () => {
         action=""
         method="post"
       >
+        <div className="w-full">
+          <Input
+            type="text"
+            id="first-name"
+            placeholder="First Name"
+            className="bg-white dark:bg-main-300 rounded-md text-gray-500 w-full"
+            required
+            {...register("name")}
+          />
+          {errors.name && (
+            <p className="text-red-500 bg-transparent">{errors.name.message}</p>
+          )}
+        </div>
+        <div className="w-full">
+          <Input
+            type="text"
+            id="last-name"
+            placeholder="Last Name"
+            className="bg-white dark:bg-main-300 rounded-md text-gray-500 w-full"
+            required
+            {...register("name")}
+          />
+          {errors.name && (
+            <p className="text-red-500 bg-transparent">{errors.name.message}</p>
+          )}
+        </div>
         <div className="w-full">
           <Input
             type="email"
@@ -67,7 +94,7 @@ export const SigninForm: React.FC = () => {
           type="submit"
           onClick={() => onSubmit}
         >
-          Login
+          SignUp
         </Button>
       </form>
     </>
