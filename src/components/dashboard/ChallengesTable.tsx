@@ -16,6 +16,7 @@ import { Button } from "../ui/button";
 import { FaPen } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import Link from "next/link";
+import { DeleteChallenge } from "../../../utils/api/delete";
 
 type ChallengesTableProps = {
   items: Challenge[];
@@ -48,7 +49,10 @@ export const ChallengesTable: React.FC<ChallengesTableProps> = ({ items }) => {
                     <FaPen />
                   </Button>
                 </Link>
-                <Button className="bg-red-400 cursor-pointer w-10">
+                <Button
+                  className="bg-red-400 cursor-pointer w-10"
+                  onClick={() => DeleteChallenge(item.id)}
+                >
                   <FaRegTrashCan />
                 </Button>
               </TableCell>
