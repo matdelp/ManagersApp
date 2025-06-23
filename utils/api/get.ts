@@ -1,3 +1,5 @@
+"use server";
+
 import { Challenge } from "@/components/dashboard/ChallengesTable.container";
 
 export const getAllChallenges = async (): Promise<Challenge[]> => {

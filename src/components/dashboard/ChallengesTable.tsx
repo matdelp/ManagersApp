@@ -51,7 +51,7 @@ export const ChallengesTable: React.FC<ChallengesTableProps> = ({ items }) => {
                 </Link>
                 <Button
                   className="bg-red-400 cursor-pointer w-10"
-                  onClick={() => DeleteChallenge(item.id)}
+                  onClick={async () => await DeleteChallenge(item.id)}
                 >
                   <FaRegTrashCan />
                 </Button>
