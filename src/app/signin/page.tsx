@@ -1,3 +1,4 @@
+"use client";
 import { SigninCard } from "@/components/signin-up/SigninCard";
 import Image from "next/image";
 import React from "react";
