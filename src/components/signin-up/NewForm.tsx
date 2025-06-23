@@ -50,7 +50,7 @@ export const SignupForm = () => {
               <FormControl>
                 <>
                   <Input
-                    className="bg-background-100 text-main-700 py-5"
+                    className="bg-background-100 text-main-100 py-5"
                     placeholder="First Name"
                     {...field}
                   />
@@ -69,7 +69,7 @@ export const SignupForm = () => {
               <FormControl>
                 <>
                   <Input
-                    className="bg-background-100 text-main-700 py-5"
+                    className="bg-background-100 text-main-100 py-5"
                     placeholder="Last Name"
                     {...field}
                   />
@@ -88,7 +88,7 @@ export const SignupForm = () => {
               <FormControl>
                 <>
                   <Input
-                    className="bg-background-100 text-main-700 py-5"
+                    className="bg-background-100 text-main-100 py-5"
                     placeholder="Email"
                     {...field}
                   />
@@ -107,7 +107,7 @@ export const SignupForm = () => {
               <FormControl>
                 <>
                   <Input
-                    className="bg-background-100 text-main-700 py-5"
+                    className="bg-background-100 text-main-100 py-5"
                     placeholder="Password"
                     type="password"
                     {...field}
