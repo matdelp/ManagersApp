@@ -1,5 +1,5 @@
 import { Menubar, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
-import { Button } from "../ui/button";
+import Link from "next/link";
 
 export const DashboardNavbar = () => {
   return (
@@ -12,12 +12,12 @@ export const DashboardNavbar = () => {
             </a>
           </MenubarTrigger>
           <MenubarTrigger>
-            <Button
-              className="bg-main-500 font-semibold cursor-pointer"
-              onClick={() => alert("not implemented yet")}
+            <Link
+              href="/logout" //temporary
+              className="bg-main-500 cursor-pointer w-20 p-2 rounded-md text-background-100 font-semibold"
             >
-              Log Out
-            </Button>
+              Log Out{" "}
+            </Link>
           </MenubarTrigger>
         </MenubarMenu>
       </Menubar>

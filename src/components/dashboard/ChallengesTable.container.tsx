@@ -1,3 +1,5 @@
+//Server Component
+
 import React from "react";
 import { ChallengesTable } from "./ChallengesTable";
 

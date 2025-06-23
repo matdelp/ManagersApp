@@ -1,6 +1,10 @@
+//client component
+"use client";
+
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -8,6 +12,10 @@ import {
 } from "@/components/ui/table";
 import React from "react";
 import { Challenge } from "./ChallengesTable.container";
+import { Button } from "../ui/button";
+import { FaPen } from "react-icons/fa";
+import { FaRegTrashCan } from "react-icons/fa6";
+import Link from "next/link";
 
 type ChallengesTableProps = {
   items: Challenge[];
@@ -17,23 +25,33 @@ export const ChallengesTable: React.FC<ChallengesTableProps> = ({ items }) => {
   return (
     <>
       <Table>
+        <TableCaption>Your challenge list</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Difficulty</TableHead>
-            <TableHead>Created at</TableHead>
-            <TableHead>Action</TableHead>
+            <TableHead className="text-center">Title</TableHead>
+            <TableHead className="text-center">Category</TableHead>
+            <TableHead className="text-center">Difficulty</TableHead>
+            <TableHead className="text-center">Created at</TableHead>
+            <TableHead className="text-center">Action</TableHead>
           </TableRow>
         </TableHeader>
         {items.map((item) => (
           <TableBody key={item.id}>
             <TableRow>
-              <TableCell>{item.title}</TableCell>
-              <TableCell>{item.category}</TableCell>
-              <TableCell>{item.level}</TableCell>
-              <TableCell>{item.createdAt}</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell className="text-center">{item.title}</TableCell>
+              <TableCell className="text-center">{item.category}</TableCell>
+              <TableCell className="text-center">{item.level}</TableCell>
+              <TableCell className="text-center">{item.createdAt}</TableCell>
+              <TableCell className="flex gap-5 justify-center">
+                <Link href={`/challenge/edit/${item.id}`}>
+                  <Button className="bg-main-500 cursor-pointer w-10">
+                    <FaPen />
+                  </Button>
+                </Link>
+                <Button className="bg-red-400 cursor-pointer w-10">
+                  <FaRegTrashCan />
+                </Button>
+              </TableCell>
             </TableRow>
           </TableBody>
         ))}
