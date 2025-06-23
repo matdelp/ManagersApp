@@ -1,11 +1,15 @@
+"use client";
+
+import { DashboardNavbar } from "@/components/dashboard/DashboardNavbar";
 import React from "react";
 
-export const DashboardPage: React.FC = () => {
+const DashboardPage: React.FC = () => {
   return (
     <>
-      <div>DashboardPage</div>
+      <DashboardNavbar />
       <div>NavBar</div>
       <div>Table</div>
     </>
   );
 };
+export default DashboardPage;
