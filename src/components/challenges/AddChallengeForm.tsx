@@ -88,6 +88,7 @@ export const AddChallengeForm: React.FC = () => {
                   <Input
                     className="bg-background-100 text-main-700 py-5"
                     placeholder="Title"
+                    required
                     {...field}
                   />
                 </FormControl>
@@ -105,6 +106,7 @@ export const AddChallengeForm: React.FC = () => {
                   <Input
                     className="bg-background-100 text-main-700 py-5"
                     placeholder="Category"
+                    required
                     {...field}
                   />
                 </FormControl>
@@ -139,7 +141,7 @@ export const AddChallengeForm: React.FC = () => {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>Description*</FormLabel>
                 <FormControl>
                   <SimpleMdeReact
                     value={field.value}
@@ -173,6 +175,7 @@ export const AddChallengeForm: React.FC = () => {
                       <Input
                         className="bg-background-100 text-main-700 py-5"
                         placeholder="Function name"
+                        required
                         {...field}
                       />
                     </FormControl>
@@ -285,6 +288,7 @@ export const AddChallengeForm: React.FC = () => {
                             <Input
                               className="bg-background-100 text-main-700 py-5"
                               type="string"
+                              required
                               placeholder="argument"
                               {...field}
                             />
@@ -304,6 +308,7 @@ export const AddChallengeForm: React.FC = () => {
                             <Input
                               className="bg-background-100 text-main-700 py-5"
                               type="number"
+                              required
                               {...field}
                             />
                           </FormControl>
@@ -322,6 +327,7 @@ export const AddChallengeForm: React.FC = () => {
                             <Input
                               className="bg-background-100 text-main-700 py-5"
                               type="number"
+                              required
                               {...field}
                             />
                           </FormControl>
@@ -340,6 +346,7 @@ export const AddChallengeForm: React.FC = () => {
                             <Input
                               className="bg-background-100 text-main-700 py-5"
                               type="number"
+                              required
                               {...field}
                             />
                           </FormControl>
