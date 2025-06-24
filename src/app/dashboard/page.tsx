@@ -12,7 +12,7 @@ const DashboardPage: React.FC = () => {
       <div className="flex flex-col gap-2 p-2">
         <h2 className="text-4xl py-5">Your challenges</h2>
         <Link
-          href="challenge/add"
+          href="challenges/add"
           className="w-fit p-2 font-bold bg-main-500 text-background-100 cursor-pointer rounded-md"
         >
           New Challenges

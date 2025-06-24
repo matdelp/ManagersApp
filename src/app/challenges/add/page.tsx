@@ -10,9 +10,10 @@ export const AddChallengePage = () => {
     <div className="w-screen h-screen">
       <DashboardNavbar />
       <div className="py-5">
-      <h2 className="text-3xl w-full py-5">Create New Challenge</h2>
-      <AddChallengeForm />
-    </div></div>
+        <h2 className="text-3xl w-full py-5">Create New Challenge</h2>
+        <AddChallengeForm />
+      </div>
+    </div>
   );
 };
 export default AddChallengePage;

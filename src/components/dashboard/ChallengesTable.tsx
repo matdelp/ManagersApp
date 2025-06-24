@@ -44,7 +44,7 @@ export const ChallengesTable: React.FC<ChallengesTableProps> = ({ items }) => {
               <TableCell className="text-center">{item.level}</TableCell>
               <TableCell className="text-center">{item.createdAt}</TableCell>
               <TableCell className="flex gap-5 justify-center">
-                <Link href={`/challenge/edit/${item.id}`}>
+                <Link href={`/challenges/edit/${item.id}`}>
                   <Button className="bg-main-500 cursor-pointer w-10">
                     <FaPen />
                   </Button>

@@ -7,7 +7,7 @@ export const DashboardNavbar = () => {
       <Menubar className="flex justify-between px-5 py-8 bg-main-100 rounded-b-none">
         <MenubarMenu>
           <MenubarTrigger>
-            <a className="text-xl font-semibold" href="/challenges">
+            <a className="text-xl font-semibold" href="/dashboard">
               Challenges
             </a>
           </MenubarTrigger>
