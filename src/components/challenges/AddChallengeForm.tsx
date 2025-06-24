@@ -114,7 +114,13 @@ export const AddChallengeForm: React.FC = () => {
           />
         </div>
         <div className="flex flex-col gap-5 w-1/2 p-2">
-          <div className="flex justify-between w-full gap-2">
+          <div className="flex flex-col w-full relative">
+            <Button
+              type="submit"
+              className="bg-main-500 text-lg p-5 cursor-pointer w-fit absolute right-0 top-0"
+            >
+              Create
+            </Button>
             <FormField
               control={form.control}
               name="function"
@@ -133,12 +139,6 @@ export const AddChallengeForm: React.FC = () => {
               )}
             />
 
-            <Button
-              type="submit"
-              className="bg-main-500 text-lg p-5 cursor-pointer"
-            >
-              Create
-            </Button>
           </div>
           <div>
             <CodeMirror
@@ -150,7 +150,7 @@ export const AddChallengeForm: React.FC = () => {
             />
             <Button
               type="button"
-              className="bg-main-500 text-lg p-5 cursor-pointer absolute right-2"
+              className="bg-main-500 text-lg p-5 cursor-pointer absolute right-3"
               onClick={handleClick}
             >
               +
