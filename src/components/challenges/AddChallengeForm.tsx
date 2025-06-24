@@ -1,12 +1,4 @@
-import React, { useState } from "react";
-import { FaRegTrashAlt } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { langs } from "@uiw/codemirror-extensions-langs";
-import CodeMirror from "@uiw/react-codemirror";
-import { SubmitHandler, useForm, useFieldArray } from "react-hook-form";
-import { SimpleMdeReact } from "react-simplemde-editor";
-import "easymde/dist/easymde.min.css";
 import {
   Form,
   FormControl,
@@ -15,6 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -23,24 +16,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useFontSizeStore } from "@/store/useFontSizeStore";
-
-interface TestCase {
-  id: number;
-  type: string;
-  argument: string;
-  value: number;
-  output: number;
-  weight: number;
-}
-
-interface ChallengeFormData {
-  title: string;
-  category: string;
-  level: "Easy" | "Moderate" | "Hard";
-  bio: string;
-  function: string;
-  items: TestCase[];
-}
+import { langs } from "@uiw/codemirror-extensions-langs";
+import CodeMirror from "@uiw/react-codemirror";
+import "easymde/dist/easymde.min.css";
+import React, { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { SimpleMdeReact } from "react-simplemde-editor";
+import { CreateChallenge, type ChallengeData } from "../../../utils/api/create";
+import { generateId } from "../../../utils/api/generateid";
 
 export const AddChallengeForm: React.FC = () => {
   const [code, setCode] = useState(`// Type your code here`);
@@ -48,31 +32,49 @@ export const AddChallengeForm: React.FC = () => {
 
   const { size, changeSize } = useFontSizeStore();
 
-  const form = useForm<ChallengeFormData>({
+  const form = useForm<ChallengeData>({
     defaultValues: {
+      id: "",
       title: "Title",
       category: "unknown",
+      description: "",
       level: "Easy",
-      bio: "",
-      function: "Function",
-      items: [],
+      code: { function: "function", code: "" },
+      tests: [],
     },
   });
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "items",
+    name: "tests",
   });
-  const onCreate: SubmitHandler<ChallengeFormData> = (values) => {
-    console.log(values);
-  }; // Change to my custom type of data ?
   const handleChange = (value: string) => {
-    setCode(value); //temporary
+    setCode(value);
   };
 
+  const handleSubmit = async (data: ChallengeData) => {
+    try {
+      const nextId = await generateId();
+
+      const finalData: ChallengeData = {
+        ...data,
+        id: nextId,
+        code: {
+          ...data.code,
+          code, // make sure you're setting the CodeMirror code
+        },
+        createdAt: new Date().toISOString(),
+      };
+
+      const response = await CreateChallenge(finalData);
+      console.log("Challenge created:", response);
+    } catch (err) {
+      console.error("Submission error:", err);
+    }
+  };
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onCreate)}
+        onSubmit={form.handleSubmit(handleSubmit)}
         className="flex xl:flex-row flex-col items-start gap-5 w-full p-2"
       >
         <div className="flex flex-col gap-3 xl:w-1/2 w-full">
@@ -134,7 +136,7 @@ export const AddChallengeForm: React.FC = () => {
           />
           <FormField
             control={form.control}
-            name="bio"
+            name="description"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Description</FormLabel>
@@ -154,7 +156,6 @@ export const AddChallengeForm: React.FC = () => {
             <div className="flex justify-end">
               <Button
                 type="submit"
-                onClick={() => alert("not implemented yet")}
                 className="bg-main-500 text-lg p-5 cursor-pointer w-fit"
               >
                 Create
@@ -164,7 +165,7 @@ export const AddChallengeForm: React.FC = () => {
             <div className="flex flex-col w-full py-2">
               <FormField
                 control={form.control}
-                name="function"
+                name="code.function"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel>Function name*</FormLabel>
@@ -251,7 +252,7 @@ export const AddChallengeForm: React.FC = () => {
                   <div className="flex flex-wrap gap-2 w-full">
                     <FormField
                       control={form.control}
-                      name={`items.${index}.type`}
+                      name={`tests.${index}.type`}
                       render={({ field }) => (
                         <FormItem className="flex-grow basis-1/3">
                           <FormLabel>Type</FormLabel>
@@ -276,7 +277,7 @@ export const AddChallengeForm: React.FC = () => {
 
                     <FormField
                       control={form.control}
-                      name={`items.${index}.argument`} // <-- unique name
+                      name={`tests.${index}.argument`}
                       render={({ field }) => (
                         <FormItem className="flex-grow basis-1/3">
                           <FormLabel>Name</FormLabel>
@@ -295,7 +296,7 @@ export const AddChallengeForm: React.FC = () => {
 
                     <FormField
                       control={form.control}
-                      name={`items.${index}.value`} // <-- unique name
+                      name={`tests.${index}.value`}
                       render={({ field }) => (
                         <FormItem className="flex-grow basis-1/3">
                           <FormLabel>Value</FormLabel>
@@ -313,7 +314,7 @@ export const AddChallengeForm: React.FC = () => {
 
                     <FormField
                       control={form.control}
-                      name={`items.${index}.output`} // <-- unique name
+                      name={`tests.${index}.output`}
                       render={({ field }) => (
                         <FormItem className="flex-grow basis-1/3">
                           <FormLabel>Output</FormLabel>
@@ -331,7 +332,7 @@ export const AddChallengeForm: React.FC = () => {
 
                     <FormField
                       control={form.control}
-                      name={`items.${index}.weight`} // <-- unique name
+                      name={`tests.${index}.weight`}
                       render={({ field }) => (
                         <FormItem className="w-1/2">
                           <FormLabel>Weight</FormLabel>
