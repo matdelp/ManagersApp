@@ -2,12 +2,12 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -15,21 +15,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { SimpleMdeReact } from "react-simplemde-editor";
-import "easymde/dist/easymde.min.css";
-import { Input } from "@/components/ui/input";
-import CodeMirror from "@uiw/react-codemirror";
 import { langs } from "@uiw/codemirror-extensions-langs";
+import CodeMirror from "@uiw/react-codemirror";
+import "easymde/dist/easymde.min.css";
+import React, { useState } from "react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { SimpleMdeReact } from "react-simplemde-editor";
 
 export const AddChallengeForm: React.FC = () => {
   const [code, setCode] = useState(`// Type your code here`);
   const form = useForm();
-  const onCreate = (values) => {
+  const onCreate: SubmitHandler<FieldValues> = (values) => {
     console.log(values);
-  };
-  const handleChange = (value) => {
+  };// Change to my custom type of data ?
+  const handleChange = (value: string) => {
     setCode(value);
   };
 
@@ -40,9 +39,9 @@ export const AddChallengeForm: React.FC = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onCreate)}
-        className="flex items-start gap-5 w-full p-2"
+        className="flex xl:flex-row flex-col items-start gap-5 w-full p-2"
       >
-        <div className="flex flex-col gap-3 w-1/2">
+        <div className="flex flex-col gap-3 xl:w-1/2 w-full">
           <FormField
             control={form.control}
             name="title"
@@ -102,7 +101,7 @@ export const AddChallengeForm: React.FC = () => {
           <FormField
             control={form.control}
             name="bio"
-            render={({ field }) => (
+            render={() => (
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
@@ -113,32 +112,36 @@ export const AddChallengeForm: React.FC = () => {
             )}
           />
         </div>
-        <div className="flex flex-col gap-5 w-1/2 p-2">
-          <div className="flex flex-col w-full relative">
-            <Button
-              type="submit"
-              className="bg-main-500 text-lg p-5 cursor-pointer w-fit absolute right-0 top-0"
-            >
-              Create
-            </Button>
-            <FormField
-              control={form.control}
-              name="function"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Function name*</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="bg-background-100 text-main-700 py-5"
-                      placeholder="Function name"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <div className="xl:w-1/2 w-full flex flex-col gap-2 p-2">
+          <div className="flex flex-col gap-5 w-full">
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                className="bg-main-500 text-lg p-5 cursor-pointer w-fit"
+              >
+                Create
+              </Button>
+            </div>
 
+            <div className="flex flex-col w-full py-2">
+              <FormField
+                control={form.control}
+                name="function"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Function name*</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="bg-background-100 text-main-700 py-5"
+                        placeholder="Function name"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
           <div>
             <CodeMirror
