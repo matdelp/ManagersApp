@@ -23,6 +23,10 @@ type ChallengesTableProps = {
 };
 
 export const ChallengesTable: React.FC<ChallengesTableProps> = ({ items }) => {
+  const handleDelete = async (id: string) => {
+    const result = await DeleteChallenge(id);
+    alert(result.message); // Show message
+  };
   return (
     <>
       <Table>
@@ -51,7 +55,7 @@ export const ChallengesTable: React.FC<ChallengesTableProps> = ({ items }) => {
                 </Link>
                 <Button
                   className="bg-red-400 cursor-pointer w-10"
-                  onClick={async () => await DeleteChallenge(item.id)}
+                  onClick={() => handleDelete(item.id)}
                 >
                   <FaRegTrashCan />
                 </Button>

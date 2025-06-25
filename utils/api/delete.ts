@@ -7,7 +7,9 @@ export const DeleteChallenge = async (id: string) => {
     method: "DELETE",
   });
   if (!res.ok) {
-    throw new Error("Failed to delete the challenge");
+    return { success: false, message: "Failed to delete the challenge" };
   }
+
   revalidatePath("/dashboard");
+  return { success: true, message: "Challenge deleted successfully" };
 };

@@ -347,6 +347,8 @@ export const EditChallengeForm: React.FC<ChallengeDataEdited> = (challenge) => {
                             <Input
                               className="bg-background-100 text-main-700 py-5"
                               type="number"
+                              min={0}
+                              max={1}
                               required
                               {...field}
                             />

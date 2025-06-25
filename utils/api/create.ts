@@ -1,4 +1,4 @@
-"use server";
+"use client";
 
 interface TestCase {
   id: number;
@@ -38,7 +38,9 @@ export const CreateChallenge = async (
   console.log(res);
 
   if (!res.ok) {
+    alert(`Status ${res.status}: Failed to create the challenge`);
     throw new Error("Failed to create the challenge");
   }
+  alert(`Status ${res.status}: Challenge created successfully`);
   return await res.json();
 };

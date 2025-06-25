@@ -25,7 +25,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { SimpleMdeReact } from "react-simplemde-editor";
 import { CreateChallenge, type ChallengeData } from "../../../utils/api/create";
 import { generateId } from "../../../utils/api/generateid";
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from "@js-temporal/polyfill";
 
 export const AddChallengeForm: React.FC = () => {
   const [code, setCode] = useState(`// Type your code here`);
@@ -64,7 +64,7 @@ export const AddChallengeForm: React.FC = () => {
           ...data.code,
           code,
         },
-        createdAt: today.toString()
+        createdAt: today.toString(),
       };
 
       const response = await CreateChallenge(finalData);
@@ -349,6 +349,8 @@ export const AddChallengeForm: React.FC = () => {
                             <Input
                               className="bg-background-100 text-main-700 py-5"
                               type="number"
+                              min={0}
+                              max={1}
                               required
                               {...field}
                             />
