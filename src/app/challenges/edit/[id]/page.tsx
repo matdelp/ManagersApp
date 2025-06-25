@@ -15,7 +15,7 @@ const EditChallengePage = async ({ params }: EditChallengePageProps) => {
     <div className="w-screen h-screen">
       <DashboardNavbar />
       <div className="py-5">
-        <h2 className="text-3xl w-full py-5">Create New Challenge</h2>
+        <h2 className="text-3xl w-full py-5">Edit your Challenge:</h2>
         <EditChallengeForm {...challenge} />
       </div>
     </div>

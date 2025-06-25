@@ -25,6 +25,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { SimpleMdeReact } from "react-simplemde-editor";
 import { CreateChallenge, type ChallengeData } from "../../../utils/api/create";
 import { generateId } from "../../../utils/api/generateid";
+import { Temporal } from '@js-temporal/polyfill';
 
 export const AddChallengeForm: React.FC = () => {
   const [code, setCode] = useState(`// Type your code here`);
@@ -50,6 +51,7 @@ export const AddChallengeForm: React.FC = () => {
   const handleChange = (value: string) => {
     setCode(value);
   };
+  const today = Temporal.Now.plainDateISO();
 
   const handleSubmit = async (data: ChallengeData) => {
     try {
@@ -62,11 +64,12 @@ export const AddChallengeForm: React.FC = () => {
           ...data.code,
           code, // make sure you're setting the CodeMirror code
         },
-        createdAt: new Date().toISOString(),
+        createdAt: today.toString()
       };
 
       const response = await CreateChallenge(finalData);
       console.log("Challenge created:", response);
+      window.location.href = "/dashboard";
     } catch (err) {
       console.error("Submission error:", err);
     }
