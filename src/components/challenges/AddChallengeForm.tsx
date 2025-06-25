@@ -62,7 +62,7 @@ export const AddChallengeForm: React.FC = () => {
         id: nextId,
         code: {
           ...data.code,
-          code, // make sure you're setting the CodeMirror code
+          code,
         },
         createdAt: today.toString()
       };
