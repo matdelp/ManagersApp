@@ -1,8 +1,7 @@
-//Server Component
-
+"use client";
 import React from "react";
+import { useGetChallenge } from "@/hooks/useGetChallenge";
 import { ChallengesTable } from "./ChallengesTable";
-import { getAllChallenges } from "../../../utils/api/get";
 
 export type Challenge = {
   id: string;
@@ -13,8 +12,10 @@ export type Challenge = {
   actions: unknown; //TOCHANGE
 };
 
-export const ChallengesTableContainer: React.FC = async () => {
-  const challenges = await getAllChallenges();
+export const ChallengesTableContainer: React.FC = () => {
+  const { data: challenges, isLoading, error } = useGetChallenge();
+  if (isLoading) return <div>Loading…</div>;
+  if (error) return <div>Error occurred</div>;
 
   return (
     <div>
