@@ -27,7 +27,7 @@ export const SigninForm: React.FC = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
-  const { register, handleSubmit } = form;
+  const { register, handleSubmit, control } = form;
 
   const onSubmit = (formData: z.infer<typeof formSchema>) => {
     mutate(formData);
@@ -46,12 +46,13 @@ export const SigninForm: React.FC = () => {
         className="flex flex-col items-center justify-center gap-5 w-full"
       >
         <FormField
-          control={form.control}
+          control={control}
           name="email"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
                 <Input
+                  {...register("email")}
                   className="bg-background-100 text-main-700 py-5"
                   placeholder="Email"
                   {...field}
@@ -63,7 +64,7 @@ export const SigninForm: React.FC = () => {
         />
 
         <FormField
-          control={form.control}
+          control={control}
           name="password"
           render={({ field }) => (
             <FormItem className="w-full">

@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useCreateManager } from "@/hooks/useSignup";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -28,33 +29,39 @@ const formSchema = z.object({
 });
 
 export const SignupForm = () => {
+  const { mutate, isPending, error: mutationError } = useCreateManager();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
-
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const { register, handleSubmit, control } = form;
+  const onSubmit = (formData: z.infer<typeof formSchema>) => {
+    mutate(formData);
   };
+  if (isPending) {
+    return <div>Register pending</div>;
+  }
+  if (mutationError) {
+    return <div>Register failed</div>;
+  }
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col items-center justify-center gap-5 w-full"
       >
         <FormField
-          control={form.control}
+          control={control}
           name="firstName"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
-                <>
-                  <Input
-                    className="bg-background-100 text-main-700 py-5"
-                    placeholder="First Name"
-                    {...field}
-                  />
-                </>
+                <Input
+                  {...register("firstName")}
+                  className="bg-background-100 text-main-700 py-5"
+                  placeholder="First Name"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -67,13 +74,12 @@ export const SignupForm = () => {
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
-                <>
-                  <Input
-                    className="bg-background-100 text-main-700 py-5"
-                    placeholder="Last Name"
-                    {...field}
-                  />
-                </>
+                <Input
+                  {...register("lastName")}
+                  className="bg-background-100 text-main-700 py-5"
+                  placeholder="Last Name"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -86,13 +92,12 @@ export const SignupForm = () => {
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
-                <>
-                  <Input
-                    className="bg-background-100 text-main-700 py-5"
-                    placeholder="Email"
-                    {...field}
-                  />
-                </>
+                <Input
+                  {...register("email")}
+                  className="bg-background-100 text-main-700 py-5"
+                  placeholder="Email"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -105,14 +110,13 @@ export const SignupForm = () => {
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
-                <>
-                  <Input
-                    className="bg-background-100 text-main-700 py-5"
-                    placeholder="Password"
-                    type="password"
-                    {...field}
-                  />
-                </>
+                <Input
+                  {...register("password")}
+                  className="bg-background-100 text-main-700 py-5"
+                  placeholder="Password"
+                  type="password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
