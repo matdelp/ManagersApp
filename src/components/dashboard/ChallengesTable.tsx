@@ -41,21 +41,21 @@ export const ChallengesTable: React.FC<ChallengesTableProps> = ({ items }) => {
           </TableRow>
         </TableHeader>
         {items.map((item) => (
-          <TableBody key={item.id}>
+          <TableBody key={item._id}>
             <TableRow>
               <TableCell className="text-center">{item.title}</TableCell>
               <TableCell className="text-center">{item.category}</TableCell>
               <TableCell className="text-center">{item.level}</TableCell>
               <TableCell className="text-center">{item.createdAt}</TableCell>
               <TableCell className="flex gap-5 justify-center">
-                <Link href={`/challenges/edit/${item.id}`}>
+                <Link href={`/challenges/edit/${item._id}`}>
                   <Button className="bg-main-500 cursor-pointer w-10">
                     <FaPen />
                   </Button>
                 </Link>
                 <Button
                   className="bg-red-400 cursor-pointer w-10"
-                  onClick={() => handleDelete(item.id)}
+                  onClick={() => handleDelete(item._id)}
                 >
                   <FaRegTrashCan />
                 </Button>

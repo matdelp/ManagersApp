@@ -4,7 +4,7 @@ import { useGetChallenge } from "@/hooks/useGetChallenge";
 import { ChallengesTable } from "./ChallengesTable";
 
 export type Challenge = {
-  id: string;
+  _id: string;
   title: string;
   category: string;
   level: "Easy" | "Moderate" | "Hard";

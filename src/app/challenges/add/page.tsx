@@ -5,7 +5,7 @@ import { DashboardNavbar } from "@/components/dashboard/DashboardNavbar";
 
 import React from "react";
 
-export const AddChallengePage = () => {
+export const AddChallengePage: React.FC = () => {
   return (
     <div className="w-screen h-screen">
       <DashboardNavbar />

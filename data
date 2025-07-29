@@ -1,0 +1,36 @@
+Submitting: {
+  "title": "Test4 modif",
+  "category": "unknown",
+  "description": "testetstetst",
+  "level": "Easy",
+  "code": {
+    "function_name": "function test",
+    "code_text": [
+      {
+        "_id": "68887785f133cbdbf244037c",
+        "language": "js",
+        "content": "codecodecode"
+      }
+    ],
+    "inputs": [
+      {
+        "_id": "68887785f133cbdbf244037e",
+        "name": "test",
+        "type": "string"
+      }
+    ]
+  },
+  "test": [
+    {
+      "_id": "68887785f133cbdbf2440384",
+      "weight": 1,
+      "outputs": "ndjs",
+      "inputs": [
+        {
+          "name": "test",
+          "value": "testetst"
+        }
+      ]
+    }
+  ]
+}
