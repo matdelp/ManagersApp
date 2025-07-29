@@ -200,7 +200,7 @@ export const AddChallengeForm: React.FC = () => {
             <div className="flex justify-end">
               <Button
                 type="submit"
-                className="bg-main-500 text-lg p-5 cursor-pointer w-fit"
+                className="bg-main-500 text-lg p-5 cursor-pointer w-fit absolute top-20"
               >
                 Create
               </Button>
@@ -310,6 +310,7 @@ export const AddChallengeForm: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
+          <h2>Code*</h2>
           <CodeMirror
             className="relative"
             value={codeSnippets[language === "js" ? "js" : "py"]}
