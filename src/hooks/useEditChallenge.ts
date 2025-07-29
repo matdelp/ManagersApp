@@ -31,7 +31,7 @@ export const useEditChallenge = (id: string) => {
       return await response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["Challenges"] });
+      queryClient.invalidateQueries({ queryKey: ["Challenges", "Challenge"] });
       router.push("/dashboard");
     },
   });

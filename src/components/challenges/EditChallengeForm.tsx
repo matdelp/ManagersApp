@@ -127,7 +127,7 @@ export const EditChallengeForm: React.FC<EditChallengeFormProps> = ({
       })),
     };
     edit(editedData);
-    console.log("Submitting:", JSON.stringify(editedData, null, 2));
+    // console.log("Submitting:", JSON.stringify(editedData, null, 2));
   };
 
   if (isPending) return <div>Edit pending</div>;
