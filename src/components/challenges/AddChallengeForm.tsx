@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCreateChallenge } from "@/hooks/useCreateChallenge";
 import { useFontSizeStore } from "@/store/useFontSizeStore";
 import { langs } from "@uiw/codemirror-extensions-langs";
 import CodeMirror from "@uiw/react-codemirror";
@@ -23,66 +24,102 @@ import React, { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { SimpleMdeReact } from "react-simplemde-editor";
-import { CreateChallenge, type ChallengeData } from "../../../utils/api/create";
-import { generateId } from "../../../utils/api/generateid";
-import { Temporal } from "@js-temporal/polyfill";
+import { type ChallengeData } from "../../../utils/api/create";
 
 export const AddChallengeForm: React.FC = () => {
-  const [code, setCode] = useState(`// Type your code here`);
-  const [language, setLanguage] = useState<string>("javascript");
-
+  const [codeSnippets, setCodeSnippets] = useState({ js: "", py: "" });
+  const [language, setLanguage] = useState<"js" | "py">("js");
   const { size, changeSize } = useFontSizeStore();
+  const {
+    mutate: create,
+    isPending,
+    error: creationError,
+  } = useCreateChallenge();
 
   const form = useForm<ChallengeData>({
     defaultValues: {
-      id: "",
       title: "Title",
       category: "unknown",
       description: "",
       level: "Easy",
-      code: { function: "function", code: "" },
-      tests: [],
+      code: {
+        function_name: "function",
+        code_text: [
+          { language: "js", content: "" },
+          { language: "py", content: "" },
+        ],
+        inputs: [],
+      },
+      test: [],
     },
   });
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "tests",
+  const { handleSubmit, control, getValues } = form;
+
+  const {
+    fields: inputFields,
+    append: appendInput,
+    remove: removeInput,
+  } = useFieldArray({
+    control: control,
+    name: "code.inputs",
   });
+
+  const {
+    fields: testFields,
+    append: appendTest,
+    remove: removeTest,
+  } = useFieldArray({
+    control: control,
+    name: "test",
+  });
+
   const handleChange = (value: string) => {
-    setCode(value);
+    setCodeSnippets((prev) => ({
+      ...prev,
+      [language === "js" ? "js" : "py"]: value,
+    }));
   };
-  const today = Temporal.Now.plainDateISO();
 
-  const handleSubmit = async (data: ChallengeData) => {
-    try {
-      const nextId = await generateId();
-
-      const finalData: ChallengeData = {
-        ...data,
-        id: nextId,
-        code: {
-          ...data.code,
-          code,
-        },
-        createdAt: today.toString(),
-      };
-
-      const response = await CreateChallenge(finalData);
-      console.log("Challenge created:", response);
-      window.location.href = "/dashboard";
-    } catch (err) {
-      console.error("Submission error:", err);
-    }
+  const onSubmit = (formData: ChallengeData) => {
+    const code_text: ChallengeData["code"]["code_text"] = Object.entries(
+      codeSnippets
+    )
+      .filter(([, content]) => content.trim() !== "")
+      .map(([lang, content]) => ({
+        language: lang === "js" ? "js" : "py",
+        content,
+      }));
+    const transformedData = {
+      ...formData,
+      code: {
+        function_name: formData.code.function_name,
+        code_text: code_text,
+        inputs: formData.code.inputs,
+      },
+      test: formData.test.map((test) => ({
+        weight: Number(test.weight),
+        inputs: formData.code.inputs.map((input, i) => ({
+          name: input.name,
+          value: test.inputs[i]?.value,
+        })),
+        outputs: test.outputs,
+      })),
+    };
+    create(transformedData);
   };
+
+  if (isPending) return <div>Creation pending</div>;
+  if (creationError) return <div>Creation failed</div>;
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(handleSubmit)}
+        onSubmit={handleSubmit(onSubmit)}
         className="flex xl:flex-row flex-col items-start gap-5 w-full p-2"
       >
         <div className="flex flex-col gap-3 xl:w-1/2 w-full">
           <FormField
-            control={form.control}
+            control={control}
             name="title"
             render={({ field }) => (
               <FormItem className="w-full">
@@ -100,7 +137,7 @@ export const AddChallengeForm: React.FC = () => {
             )}
           />
           <FormField
-            control={form.control}
+            control={control}
             name="category"
             render={({ field }) => (
               <FormItem className="w-full">
@@ -117,8 +154,9 @@ export const AddChallengeForm: React.FC = () => {
               </FormItem>
             )}
           />
+
           <FormField
-            control={form.control}
+            control={control}
             name="level"
             render={({ field }) => (
               <FormItem>
@@ -139,8 +177,9 @@ export const AddChallengeForm: React.FC = () => {
               </FormItem>
             )}
           />
+
           <FormField
-            control={form.control}
+            control={control}
             name="description"
             render={({ field }) => (
               <FormItem>
@@ -169,8 +208,8 @@ export const AddChallengeForm: React.FC = () => {
 
             <div className="flex flex-col w-full py-2">
               <FormField
-                control={form.control}
-                name="code.function"
+                control={control}
+                name="code.function_name"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel>Function name*</FormLabel>
@@ -186,185 +225,181 @@ export const AddChallengeForm: React.FC = () => {
                   </FormItem>
                 )}
               />
-            </div>
-            <div className="flex flex-col gap-2 relative">
-              <div className="flex justify-end">
-                <Select onValueChange={changeSize} value={size}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select size" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="12px">12px</SelectItem>
-                    <SelectItem value="14px">14px</SelectItem>
-                    <SelectItem value="16px">16px</SelectItem>
-                    <SelectItem value="18px">18px</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select onValueChange={setLanguage} value={language}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select language" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="javascript">JavaScript</SelectItem>
-                    <SelectItem value="python">Python</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="relative">
-                <CodeMirror
-                  className="relative"
-                  value={code}
-                  height="200px"
-                  extensions={
-                    language === "javascript" ? [langs.jsx()] : [langs.python()]
-                  }
-                  onChange={handleChange}
-                  style={{
-                    fontSize: size,
-                  }}
-                />
-                <Button
-                  type="button"
-                  className="bg-main-500 text-lg p-5 cursor-pointer absolute right-3 -bottom-10"
-                  onClick={() =>
-                    append({
-                      id: Date.now(),
-                      type: "number",
-                      argument: "a",
-                      value: 10,
-                      output: 10,
-                      weight: 0.8,
-                    })
-                  }
-                >
-                  +
-                </Button>
-              </div>{" "}
-              <h2 className="text-xl py-5">
-                Tests<span>*</span>
-              </h2>
-              {fields.map((field, index) => (
-                <div key={field.id} className="flex gap-2 w-full">
-                  <div className="flex items-center">
-                    <Button
-                      type="button"
-                      aria-label="Remove test case"
-                      className="bg-red-500 cursor-pointer"
-                      onClick={() => remove(index)}
-                    >
-                      <FaRegTrashAlt />
-                    </Button>
-                  </div>
-                  <div className="flex flex-wrap gap-2 w-full">
-                    <FormField
-                      control={form.control}
-                      name={`tests.${index}.type`}
-                      render={({ field }) => (
-                        <FormItem className="flex-grow basis-1/3">
-                          <FormLabel>Type</FormLabel>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                            >
-                              <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select type" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="number">number</SelectItem>
-                                <SelectItem value="string">string</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`tests.${index}.argument`}
-                      render={({ field }) => (
-                        <FormItem className="flex-grow basis-1/3">
-                          <FormLabel>Name</FormLabel>
-                          <FormControl>
-                            <Input
-                              className="bg-background-100 text-main-700 py-5"
-                              type="string"
-                              required
-                              placeholder="argument"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`tests.${index}.value`}
-                      render={({ field }) => (
-                        <FormItem className="flex-grow basis-1/3">
-                          <FormLabel>Value</FormLabel>
-                          <FormControl>
-                            <Input
-                              className="bg-background-100 text-main-700 py-5"
-                              type="number"
-                              required
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`tests.${index}.output`}
-                      render={({ field }) => (
-                        <FormItem className="flex-grow basis-1/3">
-                          <FormLabel>Output</FormLabel>
-                          <FormControl>
-                            <Input
-                              className="bg-background-100 text-main-700 py-5"
-                              type="number"
-                              required
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`tests.${index}.weight`}
-                      render={({ field }) => (
-                        <FormItem className="w-1/2">
-                          <FormLabel>Weight</FormLabel>
-                          <FormControl>
-                            <Input
-                              className="bg-background-100 text-main-700 py-5"
-                              type="number"
-                              min={0}
-                              max={1}
-                              required
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+              {inputFields.map((field, index) => (
+                <div key={field.id} className="flex gap-2 items-end mt-2">
+                  <FormField
+                    control={control}
+                    name={`code.inputs.${index}.name`}
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel>Name*</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="bg-background-100 text-main-700 py-5"
+                            required
+                            {...field}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={control}
+                    name={`code.inputs.${index}.type`}
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel>Type*</FormLabel>
+                        <FormControl>
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="string">string</SelectItem>
+                              <SelectItem value="number">number</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="button"
+                    className="bg-red-500"
+                    onClick={() => removeInput(index)}
+                  >
+                    <FaRegTrashAlt />
+                  </Button>
                 </div>
               ))}
             </div>
+
+            <Button
+              type="button"
+              className="w-28 mt-2 bg-main-500 text-lg cursor-pointer"
+              onClick={() => appendInput({ name: "", type: "string" })}
+            >
+              + Add Inputs
+            </Button>
           </div>
-        </div>
+          <div className="flex justify-end gap-2">
+            <Select onValueChange={changeSize} value={size}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select size" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="12px">12px</SelectItem>
+                <SelectItem value="14px">14px</SelectItem>
+                <SelectItem value="16px">16px</SelectItem>
+                <SelectItem value="18px">18px</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              onValueChange={(value) => setLanguage(value as "js" | "py")}
+              value={language}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="js">JavaScript</SelectItem>
+                <SelectItem value="py">Python</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <CodeMirror
+            className="relative"
+            value={codeSnippets[language === "js" ? "js" : "py"]}
+            height="200px"
+            extensions={language === "js" ? [langs.jsx()] : [langs.python()]}
+            onChange={handleChange}
+            style={{ fontSize: size }}
+          />
+          <Button
+            type="button"
+            className="bg-main-500 text-lg p-5 cursor-pointer w-fit mt-4"
+            onClick={() => appendTest({ inputs: [], outputs: "", weight: 1 })}
+          >
+            + Add Test
+          </Button>
+
+          {testFields.map((field, index) => (
+            <div key={field.id} className="flex gap-2 w-full">
+              <div className="flex items-center">
+                <Button
+                  type="button"
+                  aria-label="Remove test case"
+                  className="bg-red-500 cursor-pointer"
+                  onClick={() => removeTest(index)}
+                >
+                  <FaRegTrashAlt />
+                </Button>
+              </div>
+              {getValues("code.inputs").map((input, i) => (
+                <FormField
+                  key={i}
+                  control={control}
+                  name={`test.${index}.inputs.${i}.value`}
+                  render={({ field }) => (
+                    <FormItem className="flex-grow basis-1/3">
+                      <FormLabel>input</FormLabel>
+                      <FormControl>
+                        <Input
+                          className="bg-background-100 text-main-700 py-5"
+                          type={input.type === "number" ? "number" : "text"}
+                          required
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+              <FormField
+                control={control}
+                name={`test.${index}.outputs`}
+                render={({ field }) => (
+                  <FormItem className="flex-grow basis-1/3">
+                    <FormLabel>Output</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="bg-background-100 text-main-700 py-5"
+                        required
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name={`test.${index}.weight`}
+                render={({ field }) => (
+                  <FormItem className="w-1/2">
+                    <FormLabel>Weight</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="bg-background-100 text-main-700 py-5"
+                        type="number"
+                        step="0.1"
+                        min={0}
+                        max={1}
+                        required
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          ))}
+        </div>{" "}
       </form>
     </Form>
   );

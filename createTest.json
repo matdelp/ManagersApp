@@ -1,0 +1,37 @@
+{
+  "title": "Test : reverse_string",
+  "category": "String",
+  "description": "### Problem Statement:\nReverse a given string `s`.\n\n### Example:\nFor example, the reverse of `\"hello\"` is `\"olleh\"`.\n\n### Constraints:\n- The input `s` is a string.\n- `1 <= len(s) <= 100`.\n\n### Approach:\nConvert the string to a list, reverse it, and join it back to a string.\n\n### Implementation:\nDefine a function `reverse_string(s)` that returns the reversed string.",
+  "level": "Easy",
+  "code": {
+    "function_name": "reverse_string",
+    "code_text": [
+      {
+        "language": "py",
+        "content": "def reverse_string(s):\n    return \"\""
+      },
+      {
+        "language": "js",
+        "content": "function reverse_string(s) {\n    return \"\";\n}"
+      }
+    ],
+    "inputs": [
+      {
+        "name": "s",
+        "type": "string"
+      }
+    ]
+  },
+  "test": [
+    {
+      "weight": 0.8,
+      "inputs": [
+        {
+          "name": "s",
+          "value": "hello"
+        }
+      ],
+      "outputs": "olleh"
+    }
+  ]
+}

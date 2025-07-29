@@ -1,0 +1,47 @@
+{
+  "title": "Test",
+  "category": "test",
+  "description": "test",
+  "level": "Easy",
+  "code": {
+    "function_name": "test",
+    "code_text": [
+      {
+        "language": "py",
+        "content": "test"
+      },
+      {
+        "language": "js",
+        "content": "tests"
+      }
+    ],
+    "inputs": [
+      {
+        "name": "tests",
+        "type": "string"
+      }
+    ]
+  },
+  "test": [
+    {
+      "weight": 1,
+      "inputs": [
+        {
+          "name": "tests",
+          "value": "test1"
+        }
+      ],
+      "outputs": "test"
+    },
+    {
+      "weight": "0.8",
+      "inputs": [
+        {
+          "name": "tests",
+          "value": "test2"
+        }
+      ],
+      "outputs": "tests"
+    }
+  ]
+}
