@@ -1,4 +1,3 @@
-//client component
 "use client";
 
 import {
@@ -10,22 +9,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useDeleteChallenge } from "@/hooks/useDeleteChallenge";
+import Link from "next/link";
 import React from "react";
-import { Challenge } from "./ChallengesTable.container";
-import { Button } from "../ui/button";
 import { FaPen } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
-import Link from "next/link";
-import { DeleteChallenge } from "../../../utils/api/delete";
+import { Button } from "../ui/button";
+import { Challenge } from "./ChallengesTable.container";
 
 type ChallengesTableProps = {
   items: Challenge[];
 };
 
 export const ChallengesTable: React.FC<ChallengesTableProps> = ({ items }) => {
-  const handleDelete = async (id: string) => {
-    const result = await DeleteChallenge(id);
-    alert(result.message); // Show message
+  const { mutate: deleteChallenge, isPending, error } = useDeleteChallenge();
+  if (isPending) return <div>Edit pending</div>;
+  if (error) return <div>Edit failed</div>;
+  const handleDelete = (id: string) => {
+    deleteChallenge(id);
   };
   return (
     <>
